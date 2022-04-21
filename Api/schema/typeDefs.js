@@ -24,12 +24,25 @@ module.exports = gql`
         isCompleted: Boolean!
         taskList: TaskList!
     }
+
     #Query
     type Query {
         myTaskList: [TaskList!]!
     }
     #Mutation
     type Mutation {
-        createMutation: User!
+        signUp(input: SignUpInput): AuthUser
+    }
+    #Auth
+    type AuthUser {
+        user: User!
+        token: String!
+    }
+    #input
+    input SignUpInput {
+        name: String!
+        email: String!
+        password: String!
+        avatar: String
     }
 `
