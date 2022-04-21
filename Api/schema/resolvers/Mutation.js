@@ -1,3 +1,3 @@
 exports.Mutation = {
-    createMutation: (parent, args, context) => {},
+    signUp: (parent, args, context) => {},
 }
