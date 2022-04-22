@@ -4,12 +4,21 @@ const dotenv = require('dotenv')
 const typeDefs = require('./schema/typeDefs')
 const resolvers = require('./schema/resolvers')
 const dbConnection = require('./utils/dbConnection')
+const User = require('./model/User')
 
 // initial
 dotenv.config()
 dbConnection()
 
-const server = new ApolloServer({ typeDefs, resolvers })
+const server = new ApolloServer({
+    typeDefs,
+    resolvers,
+    context: {
+        db: {
+            User,
+        },
+    },
+})
 
 // The `listen` method launches a web server.
 server.listen().then(({ url }) => {
