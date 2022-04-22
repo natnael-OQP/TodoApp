@@ -1,4 +1,5 @@
 const bcrypt = require('bcryptjs')
+const { getToken } = require('../../utils/getToken')
 
 exports.Mutation = {
     signUp: async (_, { input }, { db }) => {
@@ -11,7 +12,7 @@ exports.Mutation = {
             password: hashPassword,
         }
         const user = await User.create(newUser)
-        return { token: hashPassword, user }
+        return { token: getToken(user), user }
     },
     signIn: async (_, { input }, { db: { User } }) => {
         const { password, email } = input
@@ -24,7 +25,7 @@ exports.Mutation = {
             if (!isCorrect) {
                 throw new Error('invalid credentials ')
             }
-            return { token: 'jfhsjkdf sdfglayriewu fsdf', user }
+            return { token: getToken(user), user }
         } catch (error) {
             throw new Error(error)
         }
