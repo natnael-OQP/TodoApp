@@ -8,6 +8,13 @@ module.exports = gql`
         email: String!
         avatar: String
     }
+    #Todo
+    type Todo {
+        id: ID!
+        content: String!
+        isCompleted: Boolean!
+        taskList: TaskList!
+    }
     #TaskList
     type TaskList {
         id: ID!
@@ -17,32 +24,30 @@ module.exports = gql`
         users: [User!]!
         todos: [Todo!]!
     }
-    #Todo
-    type Todo {
-        id: ID!
-        content: String!
-        isCompleted: Boolean!
-        taskList: TaskList!
+    #inputs
+    input SignUpInput {
+        name: String!
+        email: String!
+        password: String!
+        avatar: String
+    }
+    input SignInInput {
+        email: String!
+        password: String!
     }
 
+    #Auth
+    type AuthUser {
+        user: User!
+        token: String!
+    }
     #Query
     type Query {
         myTaskList: [TaskList!]!
     }
     #Mutation
     type Mutation {
-        signUp(input: SignUpInput): AuthUser
-    }
-    #Auth
-    type AuthUser {
-        user: User!
-        token: String!
-    }
-    #input
-    input SignUpInput {
-        name: String!
-        email: String!
-        password: String!
-        avatar: String
+        signUp(input: SignUpInput): AuthUser!
+        signIn(input: SignInInput): AuthUser!
     }
 `
