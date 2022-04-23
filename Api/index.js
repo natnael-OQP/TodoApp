@@ -6,6 +6,7 @@ const typeDefs = require('./schema/typeDefs')
 const resolvers = require('./schema/resolvers')
 const dbConnection = require('./utils/dbConnection')
 const User = require('./model/User')
+const TaskList = require('./model/TaskList')
 const { getUserFromToken } = require('./utils/jwt')
 
 // initial
@@ -15,6 +16,7 @@ dbConnection()
 // mongodb
 let db = {
     User,
+    TaskList,
 }
 
 const server = new ApolloServer({
