@@ -1,22 +1,34 @@
-const { ApolloServer, gql } = require('apollo-server')
+const { ApolloServer } = require('apollo-server')
 const dotenv = require('dotenv')
+
 // import
 const typeDefs = require('./schema/typeDefs')
 const resolvers = require('./schema/resolvers')
 const dbConnection = require('./utils/dbConnection')
 const User = require('./model/User')
+const { getUserFromToken } = require('./utils/jwt')
 
 // initial
 dotenv.config()
 dbConnection()
 
+// mongodb
+let db = {
+    User,
+}
+
 const server = new ApolloServer({
     typeDefs,
     resolvers,
-    context: {
-        db: {
-            User,
+    context: async ({
+        req: {
+            headers: { authorization },
         },
+    }) => {
+        return {
+            db,
+            authUser: await getUserFromToken(authorization, db.User),
+        }
     },
 })
 
