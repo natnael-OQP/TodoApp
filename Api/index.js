@@ -2,7 +2,7 @@ const { ApolloServer } = require('apollo-server')
 const dotenv = require('dotenv')
 
 // import
-const typeDefs = require('./schema/typeDefs')
+const typeDefs = require('./schema/typeDefinition')
 const resolvers = require('./schema/resolvers')
 const dbConnection = require('./utils/dbConnection')
 const User = require('./model/User')
