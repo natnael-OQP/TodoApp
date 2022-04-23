@@ -2,8 +2,9 @@ const bcrypt = require('bcryptjs')
 const { getToken } = require('../../utils/jwt')
 
 exports.Mutation = {
-    signUp: async (_, { input }, { db }) => {
-        const { User } = db
+    // ---------- signUp ----------
+    signUp: async (_, { input }, { db: { User } }) => {
+        // hash password
         const salt = await bcrypt.genSalt(10)
         const hashPassword = await bcrypt.hash(input.password, salt)
 
@@ -14,18 +15,29 @@ exports.Mutation = {
         const user = await User.create(newUser)
         return { token: getToken(user), user }
     },
-    signIn: async (_, { input }, { db: { User } }) => {
-        const { password, email } = input
+    // ---------- signIn ----------
+    signIn: async (_, { input: { password, email } }, { db: { User } }) => {
         try {
             const user = await User.findOne({ email })
-            if (!user) {
-                throw new Error('invalid credentials ')
-            }
+            if (!user) throw new Error('invalid credentials ')
+
             const isCorrect = await bcrypt.compare(password, user.password)
-            if (!isCorrect) {
-                throw new Error('invalid credentials ')
-            }
+            if (!isCorrect) throw new Error('invalid credentials ')
+
             return { token: getToken(user), user }
+        } catch (error) {
+            throw new Error(error)
+        }
+    },
+    // ---------- createTaskList ----------
+    createTaskList: async (_, { title }, { db: { TaskList }, authUser }) => {
+        if (!authUser)
+            throw new Error("please login first your't Authenticated ")
+        if (!title) throw new Error('fille input filed')
+        try {
+            const newTaskList = { title, userIds: authUser._id || authUser.id }
+            const taskList = await TaskList.create(newTaskList)
+            return taskList
         } catch (error) {
             throw new Error(error)
         }
