@@ -1,6 +1,7 @@
 const { gql } = require('apollo-server')
 
 module.exports = gql`
+    #---------------------------------- Schema Definition ----------------------------------
     #User
     type User {
         id: ID!
@@ -24,7 +25,7 @@ module.exports = gql`
         users: [User!]!
         todos: [Todo!]!
     }
-    #inputs
+    #---------------------------------- inputs ----------------------------------
     input SignUpInput {
         name: String!
         email: String!
@@ -35,19 +36,19 @@ module.exports = gql`
         email: String!
         password: String!
     }
-
-    #Auth
+    #---------------------------------- Auth ----------------------------------
     type AuthUser {
         user: User!
         token: String!
     }
-    #Query
+    #---------------------------------- Query ----------------------------------
     type Query {
         myTaskList: [TaskList!]!
     }
-    #Mutation
+    #---------------------------------- Mutation ----------------------------------
     type Mutation {
-        signUp(input: SignUpInput): AuthUser!
-        signIn(input: SignInInput): AuthUser!
+        signUp(input: SignUpInput!): AuthUser!
+        signIn(input: SignInInput!): AuthUser!
+        createTaskList(title: String!): TaskList!
     }
 `
