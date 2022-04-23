@@ -1,5 +1,5 @@
 const bcrypt = require('bcryptjs')
-const { getToken } = require('../../utils/getToken')
+const { getToken } = require('../../utils/jwt')
 
 exports.Mutation = {
     signUp: async (_, { input }, { db }) => {
