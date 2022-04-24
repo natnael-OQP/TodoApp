@@ -42,4 +42,24 @@ exports.Mutation = {
             throw new Error(error)
         }
     },
+    // ---------- update Task Lists ----------
+    updateTaskList: async (
+        _,
+        { id, title },
+        { db: { TaskList }, authUser }
+    ) => {
+        if (!authUser)
+            throw new Error("please login first your't Authenticated ")
+        if (!title || !id) throw new Error('fille input filed')
+        const taskList = await TaskList.findById(id)
+        if (!taskList) throw new Error('task list Not Found')
+
+        const updated = await TaskList.findByIdAndUpdate(
+            id,
+            { title },
+            { new: true }
+        )
+
+        return updated
+    },
 }
