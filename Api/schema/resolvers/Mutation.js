@@ -1,5 +1,6 @@
 const bcrypt = require('bcryptjs')
 const { getToken } = require('../../utils/jwt')
+const mongoose = require('mongoose')
 
 exports.Mutation = {
     // ---------- signUp ----------
@@ -64,10 +65,61 @@ exports.Mutation = {
     },
     // ---------- delete Task Lists ----------
     deleteTaskList: async (_, { id }, { db: { TaskList }, authUser }) => {
-        if (!authUser)
-            throw new Error("please login first your't Authenticated ")
-        if (!id) throw new Error('fille input filed')
-        await TaskList.findByIdAndDelete(id)
-        return 'Deleted successfully '
+        try {
+            if (!authUser)
+                throw new Error("please login first your't Authenticated ")
+            if (!id) throw new Error('fille input filed')
+            await TaskList.findByIdAndDelete(id)
+            return 'Deleted successfully '
+        } catch (error) {
+            throw new Error(error)
+        }
+    },
+    // ---------- get Task Lists ----------
+    getTaskList: async (_, { id }, { db: { TaskList }, authUser }) => {
+        try {
+            if (!authUser)
+                throw new Error("please login first your't Authenticated ")
+            if (!id) throw new Error('fille input filed')
+            const taskList = await TaskList.findById(id)
+            if (!taskList) throw new Error('Task List Not Found')
+            return taskList
+        } catch (error) {
+            throw new Error(error)
+        }
+    },
+    // ---------- Add User To Task Lists ----------
+    addUserToTaskList: async (
+        _,
+        { taskListId, userId },
+        { db: { TaskList }, authUser }
+    ) => {
+        try {
+            //  handel Error
+            if (!authUser)
+                throw new Error("please login first your't Authenticated ")
+            if (!taskListId || !userId) throw new Error('fille input filed')
+            const taskList = await TaskList.findById(taskListId)
+            if (!taskList) throw new Error('Task List Not Found')
+            let updatedData
+            if (taskList?.userIds.includes(mongoose.Types.ObjectId(userId))) {
+                console.log('already exist ')
+                updatedData = await TaskList.findByIdAndUpdate(
+                    taskListId,
+                    { $pull: { userIds: userId } },
+                    { new: true }
+                )
+            } else {
+                updatedData = await TaskList.findByIdAndUpdate(
+                    taskListId,
+                    { $push: { userIds: userId } },
+                    { new: true }
+                )
+            }
+
+            return updatedData
+        } catch (error) {
+            throw new Error(error)
+        }
     },
 }
