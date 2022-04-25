@@ -51,6 +51,8 @@ module.exports = gql`
         signIn(input: SignInInput!): AuthUser!
         createTaskList(title: String!): TaskList!
         updateTaskList(id: ID!, title: String!): TaskList!
-        deleteTaskList(id: ID!): String
+        deleteTaskList(id: ID!): String!
+        getTaskList(id: ID!): TaskList!
+        addUserToTaskList(taskListId: ID!, userId: ID!): TaskList!
     }
 `
