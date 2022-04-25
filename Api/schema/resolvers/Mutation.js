@@ -62,4 +62,12 @@ exports.Mutation = {
 
         return updated
     },
+    // ---------- delete Task Lists ----------
+    deleteTaskList: async (_, { id }, { db: { TaskList }, authUser }) => {
+        if (!authUser)
+            throw new Error("please login first your't Authenticated ")
+        if (!id) throw new Error('fille input filed')
+        await TaskList.findByIdAndDelete(id)
+        return 'Deleted successfully '
+    },
 }
