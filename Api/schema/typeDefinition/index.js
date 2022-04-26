@@ -54,7 +54,7 @@ module.exports = gql`
         addUserToTaskList(taskListId: ID!, userId: ID!): TaskList!
         # -- todo --
         createTodo(content: String!, taskListId: ID!): Todo!
-        updateTodo(content: String!, todoId: ID!): Todo!
+        updateTodo(content: String!, todoId: ID!, isCompleted: Boolean): Todo!
         deleteTodo(todoId: ID!): String!
     }
 `
