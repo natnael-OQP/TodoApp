@@ -3,7 +3,8 @@ const { getToken } = require('../../utils/jwt')
 const mongoose = require('mongoose')
 
 exports.Mutation = {
-    // ---------- signUp ----------
+    //                                               ---------- Auth User ----------
+
     signUp: async (_, { input }, { db: { User } }) => {
         // hash password
         const salt = await bcrypt.genSalt(10)
@@ -30,7 +31,9 @@ exports.Mutation = {
             throw new Error(error)
         }
     },
-    // ---------- createTaskList ----------
+
+    //                                               ---------- CRUD Task List ----------
+
     createTaskList: async (_, { title }, { db: { TaskList }, authUser }) => {
         if (!authUser)
             throw new Error("please login first your't Authenticated ")
@@ -43,7 +46,6 @@ exports.Mutation = {
             throw new Error(error)
         }
     },
-    // ---------- update Task Lists ----------
     updateTaskList: async (
         _,
         { id, title },
@@ -63,7 +65,6 @@ exports.Mutation = {
 
         return updated
     },
-    // ---------- delete Task Lists ----------
     deleteTaskList: async (_, { id }, { db: { TaskList }, authUser }) => {
         try {
             if (!authUser)
@@ -75,7 +76,6 @@ exports.Mutation = {
             throw new Error(error)
         }
     },
-    // ---------- get Task Lists ----------
     getTaskList: async (_, { id }, { db: { TaskList }, authUser }) => {
         try {
             if (!authUser)
@@ -88,7 +88,6 @@ exports.Mutation = {
             throw new Error(error)
         }
     },
-    // ---------- Add User To Task Lists ----------
     addUserToTaskList: async (
         _,
         { taskListId, userId },
@@ -118,6 +117,43 @@ exports.Mutation = {
             }
 
             return updatedData
+        } catch (error) {
+            throw new Error(error)
+        }
+    },
+
+    //                                               ---------- CRUD Todo ----------
+
+    createTodo: async (
+        _,
+        { content, taskListId },
+        { db: { Todo }, authUser }
+    ) => {
+        if (!authUser)
+            throw new Error("please login first your't Authenticated ")
+        if (!taskListId || !content) throw new Error('fille input filed')
+
+        try {
+            const newTodo = { content, taskListId }
+            return await Todo.create(newTodo)
+        } catch (error) {
+            throw new Error(error)
+        }
+    },
+    updateTodo: async (_, { content, todoId }, { db: { Todo }, authUser }) => {
+        if (!authUser)
+            throw new Error("please login first your't Authenticated ")
+        if (!taskListId || !content) throw new Error('fille input filed')
+
+        const todo = await Todo.findById(todoId)
+        if (!todo) throw new Error('Todo Not Found')
+
+        try {
+            return await await Todo.findByIdAndUpdate(
+                todoId,
+                { content },
+                { new: true }
+            )
         } catch (error) {
             throw new Error(error)
         }
