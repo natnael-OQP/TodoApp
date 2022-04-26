@@ -55,5 +55,6 @@ module.exports = gql`
         # -- todo --
         createTodo(content: String!, taskListId: ID!): Todo!
         updateTodo(content: String!, todoId: ID!): Todo!
+        deleteTodo(todoId: ID!): String!
     }
 `
