@@ -7,6 +7,7 @@ const resolvers = require('./schema/resolvers')
 const dbConnection = require('./utils/dbConnection')
 const User = require('./model/User')
 const TaskList = require('./model/TaskList')
+const Todo = require('./model/Todo')
 const { getUserFromToken } = require('./utils/jwt')
 
 // initial
@@ -17,6 +18,7 @@ dbConnection()
 let db = {
     User,
     TaskList,
+    Todo,
 }
 
 const server = new ApolloServer({
