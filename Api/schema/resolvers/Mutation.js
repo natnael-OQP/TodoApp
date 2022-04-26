@@ -143,17 +143,32 @@ exports.Mutation = {
     updateTodo: async (_, { content, todoId }, { db: { Todo }, authUser }) => {
         if (!authUser)
             throw new Error("please login first your't Authenticated ")
-        if (!taskListId || !content) throw new Error('fille input filed')
+        if (!todoId || !content) throw new Error('fille input filed')
 
         const todo = await Todo.findById(todoId)
         if (!todo) throw new Error('Todo Not Found')
 
         try {
-            return await await Todo.findByIdAndUpdate(
+            return await Todo.findByIdAndUpdate(
                 todoId,
                 { content },
                 { new: true }
             )
+        } catch (error) {
+            throw new Error(error)
+        }
+    },
+    deleteTodo: async (_, { todoId }, { db: { Todo }, authUser }) => {
+        if (!authUser)
+            throw new Error("please login first your't Authenticated ")
+        if (!todoId) throw new Error('fille input filed')
+
+        const todo = await Todo.findById(todoId)
+        if (!todo) throw new Error('Todo Not Found')
+
+        try {
+            await Todo.findByIdAndDelete(todoId)
+            return 'deleted successfully '
         } catch (error) {
             throw new Error(error)
         }
