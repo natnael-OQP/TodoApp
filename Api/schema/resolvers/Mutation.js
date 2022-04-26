@@ -140,7 +140,11 @@ exports.Mutation = {
             throw new Error(error)
         }
     },
-    updateTodo: async (_, { content, todoId }, { db: { Todo }, authUser }) => {
+    updateTodo: async (
+        _,
+        { content, todoId, isCompleted },
+        { db: { Todo }, authUser }
+    ) => {
         if (!authUser)
             throw new Error("please login first your't Authenticated ")
         if (!todoId || !content) throw new Error('fille input filed')
@@ -151,7 +155,7 @@ exports.Mutation = {
         try {
             return await Todo.findByIdAndUpdate(
                 todoId,
-                { content },
+                { content, isCompleted },
                 { new: true }
             )
         } catch (error) {
