@@ -1,19 +1,56 @@
 import { useState } from 'react'
-import { StyleSheet, TextInput } from 'react-native'
+import { StyleSheet, FlatList } from 'react-native'
 import { Text, View } from '../components/Themed'
-import { RootTabScreenProps } from '../types'
+
 import TodoItem from '../components/TodoItem'
 
-export default function TabOneScreen({
-    navigation,
-}: RootTabScreenProps<'TabOne'>) {
-    const [value, setValue] = useState<Boolean>(false)
+export default function TabOneScreen() {
+    const [todos, setTodos] = useState([
+        {
+            id: 1,
+            content: 'Muy milk',
+            isCompleted: true,
+        },
+        {
+            id: 2,
+            content: 'Muy coffee',
+            isCompleted: false,
+        },
+        {
+            id: 3,
+            content: 'todo app',
+            isCompleted: false,
+        },
+    ])
+
+    const onSubmit = (index: number) => {
+        const newTodo = [...todos]
+        newTodo.splice(index, 0, {
+            id: index,
+            content: '',
+            isCompleted: false,
+        })
+        setTodos(newTodo)
+    }
 
     return (
         <View style={styles.container}>
             <Text style={styles.title}>Home</Text>
-            <TodoItem isChecked={value} onPress={() => setValue(!value)} />
-            <TodoItem isChecked={value} onPress={() => setValue(!value)} />
+            <FlatList
+                style={{ width: '100%' }}
+                data={todos}
+                keyExtractor={(item: {
+                    id: number
+                    content: string
+                    isCompleted: boolean
+                }) => item.id}
+                renderItem={({ item, index }) => (
+                    <TodoItem
+                        todo={item}
+                        onSubmit={() => onSubmit(index + 1)}
+                    />
+                )}
+            />
         </View>
     )
 }
