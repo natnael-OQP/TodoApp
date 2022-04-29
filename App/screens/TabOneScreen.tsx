@@ -11,6 +11,7 @@ import { Text, View } from '../components/Themed'
 import TodoItem from '../components/TodoItem'
 
 export default function TabOneScreen() {
+    const [title, setTitle] = useState<string>('')
     const [todos, setTodos] = useState([
         {
             id: 1,
@@ -48,7 +49,12 @@ export default function TabOneScreen() {
             keyboardVerticalOffset={keyboardVerticalOffset}
             style={styles.container}
         >
-            <TextInput style={styles.title} />
+            <TextInput
+                placeholder="Title"
+                value={title}
+                onChangeText={setTitle}
+                style={styles.title}
+            />
             <FlatList
                 style={{ width: '100%' }}
                 data={todos}
@@ -74,7 +80,11 @@ const styles = StyleSheet.create({
         alignItems: 'center',
     },
     title: {
-        fontSize: 20,
-        fontWeight: 'bold',
+        fontSize: 22,
+        fontWeight: '500',
+        width: '100%',
+        color: 'white',
+        paddingHorizontal: 7,
+        paddingVertical: 4,
     },
 })
