@@ -28,7 +28,7 @@ const TodoItem = ({ todo, onSubmit }: Props) => {
         if (inputRef?.current) inputRef?.current.focus()
     }, [inputRef])
 
-    const onKeyPress = ({ nativeEvent: { key: keyValue } }) => {
+    const onKeyPress = ({ nativeEvent: { key: keyValue } }: any) => {
         if (keyValue === 'Backspace' && input === '') {
             console.warn('delete item')
         }
