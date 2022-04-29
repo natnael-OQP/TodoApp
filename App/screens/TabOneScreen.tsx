@@ -1,5 +1,11 @@
 import { useState } from 'react'
-import { StyleSheet, FlatList } from 'react-native'
+import {
+    Platform,
+    StyleSheet,
+    FlatList,
+    TextInput,
+    KeyboardAvoidingView,
+} from 'react-native'
 import { Text, View } from '../components/Themed'
 
 import TodoItem from '../components/TodoItem'
@@ -25,17 +31,24 @@ export default function TabOneScreen() {
 
     const onSubmit = (index: number) => {
         const newTodo = [...todos]
+        let id = 4
         newTodo.splice(index, 0, {
-            id: index,
+            id: id + index,
             content: '',
             isCompleted: false,
         })
         setTodos(newTodo)
     }
 
+    const keyboardVerticalOffset = Platform.OS === 'ios' ? 40 : 0
+
     return (
-        <View style={styles.container}>
-            <Text style={styles.title}>Home</Text>
+        <KeyboardAvoidingView
+            behavior="position"
+            keyboardVerticalOffset={keyboardVerticalOffset}
+            style={styles.container}
+        >
+            <TextInput style={styles.title} />
             <FlatList
                 style={{ width: '100%' }}
                 data={todos}
@@ -51,7 +64,7 @@ export default function TabOneScreen() {
                     />
                 )}
             />
-        </View>
+        </KeyboardAvoidingView>
     )
 }
 
