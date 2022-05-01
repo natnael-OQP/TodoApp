@@ -5,7 +5,7 @@ import { View } from '../components/Themed'
 
 import TaskItem from '../components/TaskItem'
 
-export default function TaskListsScreen() {
+export default function TaskListsScreen({ navigation }: any) {
     const [tasks, setTasks] = useState([
         { id: '1', title: 'build app', createdAt: '2d' },
         { id: '2', title: 'learn back-end ', createdAt: '1h' },
@@ -15,6 +15,7 @@ export default function TaskListsScreen() {
 
     const onPressTaskItem = (id: string) => {
         console.log(id)
+        navigation.navigate('Todo', { id })
     }
 
     return (
