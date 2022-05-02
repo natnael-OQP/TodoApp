@@ -13,6 +13,9 @@ import Colors from '../constants/Colors'
 import useColorScheme from '../hooks/useColorScheme'
 import ModalScreen from '../screens/ModalScreen'
 import NotFoundScreen from '../screens/NotFoundScreen'
+import SignInScreen from '../screens/SignInScreen'
+import SignUpScreen from '../screens/SignUpScreen'
+import SplashScreen from '../screens/SplashScreen'
 import TaskListsScreen from '../screens/TaskListsScreen'
 import TodoScreen from '../screens/TodoScreen'
 import {
@@ -41,9 +44,24 @@ const Stack = createNativeStackNavigator<RootStackParamList>()
 
 function RootNavigator() {
     return (
-        <Stack.Navigator>
+        <Stack.Navigator initialRouteName="SignIn">
             <Stack.Screen
                 name="Root"
+                component={SplashScreen}
+                options={{ headerShown: false }}
+            />
+            <Stack.Screen
+                name="SignIn"
+                component={SignInScreen}
+                options={{ title: 'Sign In' }}
+            />
+            <Stack.Screen
+                name="SignUp"
+                component={SignUpScreen}
+                options={{ title: 'Sign Up' }}
+            />
+            <Stack.Screen
+                name="Home"
                 component={BottomTabNavigator}
                 options={{ headerShown: false }}
             />
