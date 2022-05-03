@@ -1,10 +1,26 @@
 import { useState } from 'react'
 import { StyleSheet, Text, TextInput, View, Pressable } from 'react-native'
 
+import { gql, useMutation } from '@apollo/client'
+
 const SignUpScreen = ({ navigation }: any) => {
     const [email, setEmail] = useState<string>('')
     const [name, setName] = useState<string>('')
     const [password, setPassword] = useState<string>('')
+
+    const myTaskList = gql`
+        mutation(input:SignUpInput) {
+            SignUp {
+                title
+                progress
+                todos {
+                    content
+                    isCompleted
+                }
+            }
+        }
+    `
+    // const {  } = useMutation(myTaskList)
 
     const handelSubmit = () => {}
 
