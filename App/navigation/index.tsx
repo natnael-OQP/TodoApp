@@ -40,11 +40,11 @@ export default function Navigation({
     )
 }
 
-const Stack = createNativeStackNavigator<RootStackParamList>()
+const Stack = createNativeStackNavigator()
 
 function RootNavigator() {
     return (
-        <Stack.Navigator initialRouteName="SignIn">
+        <Stack.Navigator>
             <Stack.Screen
                 name="Root"
                 component={SplashScreen}
