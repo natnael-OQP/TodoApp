@@ -1,5 +1,12 @@
 import { useState } from 'react'
-import { StyleSheet, Text, TextInput, View, Pressable } from 'react-native'
+import {
+    StyleSheet,
+    Text,
+    TextInput,
+    View,
+    Pressable,
+    ActivityIndicator,
+} from 'react-native'
 
 import { gql, useMutation } from '@apollo/client'
 
@@ -8,21 +15,26 @@ const SignUpScreen = ({ navigation }: any) => {
     const [name, setName] = useState<string>('')
     const [password, setPassword] = useState<string>('')
 
-    const myTaskList = gql`
-        mutation(input:SignUpInput) {
-            SignUp {
-                title
-                progress
-                todos {
-                    content
-                    isCompleted
+    const Sign_Up_Mutation = gql`
+        mutation ($input: SignUpInput!) {
+            signUp(input: $input) {
+                token
+                user {
+                    email
+                    name
+                    id
                 }
             }
         }
     `
-    // const {  } = useMutation(myTaskList)
+    const [SignUp, { data, error, loading }] = useMutation(Sign_Up_Mutation)
 
-    const handelSubmit = () => {}
+    const handelSubmit = () => {
+        SignUp({ variables: { input: { name, email, password } } })
+    }
+
+    console.log(data)
+    console.log(error)
 
     return (
         <View style={styles.container}>
@@ -58,10 +70,12 @@ const SignUpScreen = ({ navigation }: any) => {
                     flexDirection: 'row',
                     justifyContent: 'center',
                 }}
+                disabled={loading}
             >
                 <Text
                     style={{ color: '#FFF', fontSize: 20, fontWeight: '600' }}
                 >
+                    {loading && <ActivityIndicator />}
                     Sign In
                 </Text>
             </Pressable>
