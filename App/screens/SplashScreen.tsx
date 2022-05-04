@@ -2,12 +2,12 @@ import { useEffect } from 'react'
 import { StyleSheet, Text, View, ActivityIndicator } from 'react-native'
 
 const SplashScreen = ({ navigation }: any) => {
-    const user = true
+    const user = 0
     useEffect(() => {
         if (user) {
             navigation.navigate('Home')
         } else {
-            navigation.navigate('SignIn')
+            navigation.navigate('SignUp')
         }
     }, [user])
 
