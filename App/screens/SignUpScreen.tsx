@@ -6,9 +6,11 @@ import {
     View,
     Pressable,
     ActivityIndicator,
+    Alert,
 } from 'react-native'
 
 import { gql, useMutation } from '@apollo/client'
+import AsyncStorage from '@react-native-async-storage/async-storage'
 
 const SignUpScreen = ({ navigation }: any) => {
     const [email, setEmail] = useState<string>('')
@@ -33,9 +35,18 @@ const SignUpScreen = ({ navigation }: any) => {
         SignUp({ variables: { input: { name, email, password } } })
     }
 
+    const storeData = async (value: string) => {
+        try {
+            const jsonValue = JSON.stringify(value)
+            await AsyncStorage.setItem('token', jsonValue)
+        } catch (e) {
+            Alert.alert('Error SignUp. Try again')
+        }
+    }
+
     if (data) {
         // save user
-
+        storeData(data.signUp.token)
         navigation.navigate('Home')
     }
 
