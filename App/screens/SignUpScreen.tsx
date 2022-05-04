@@ -33,8 +33,11 @@ const SignUpScreen = ({ navigation }: any) => {
         SignUp({ variables: { input: { name, email, password } } })
     }
 
-    console.log(data)
-    console.log(error)
+    if (data) {
+        // save user
+
+        navigation.navigate('Home')
+    }
 
     return (
         <View style={styles.container}>
