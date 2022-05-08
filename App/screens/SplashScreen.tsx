@@ -15,8 +15,6 @@ const SplashScreen = ({ navigation }: any) => {
         }
     }
 
-    console.log(user)
-
     useEffect(() => {
         authUser()
         if (user) {
