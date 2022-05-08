@@ -1,9 +1,10 @@
-import { useState } from 'react'
-import { StyleSheet, FlatList } from 'react-native'
+import { useState, useEffect } from 'react'
+import { StyleSheet, FlatList, Alert } from 'react-native'
 
 import { View } from '../components/Themed'
 
 import TaskItem from '../components/TaskItem'
+import { gql, useQuery } from '@apollo/client'
 
 export default function TaskListsScreen({ navigation }: any) {
     const [tasks, setTasks] = useState([
@@ -13,10 +14,31 @@ export default function TaskListsScreen({ navigation }: any) {
         { id: '4', title: 'real time chat app', createdAt: '30m' },
     ])
 
+    const myTaskList = gql`
+        query {
+            myTaskList {
+                title
+                id
+            }
+        }
+    `
+    const { loading, error, data } = useQuery(myTaskList)
+
+    useEffect(() => {
+        if (error) {
+            Alert.alert('Error Fetching Task Lists', error.message)
+        }
+        if (data) {
+            setTasks(data.myTaskList)
+        }
+    }, [error, data])
+
     const onPressTaskItem = (id: string) => {
         console.log(id)
         navigation.navigate('Todo', { id })
     }
+
+    console.log(tasks)
 
     return (
         <View style={styles.container}>
