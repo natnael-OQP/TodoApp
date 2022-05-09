@@ -1,12 +1,26 @@
-import {
-    ApolloClient,
-    InMemoryCache,
-    ApolloProvider,
-    useQuery,
-    gql,
-} from '@apollo/client'
+import { ApolloClient, createHttpLink, InMemoryCache } from '@apollo/client'
+import { setContext } from '@apollo/client/link/context'
+
+import AsyncStorage from '@react-native-async-storage/async-storage'
+
+const httpLink = createHttpLink({
+    uri: 'http://localhost:4000/',
+})
+
+const authLink = setContext(async (_, { headers }) => {
+    // get the authentication token from local storage if it exists
+    const token = await AsyncStorage.getItem('token')
+
+    // return the headers to the context so httpLink can read them
+    return {
+        headers: {
+            ...headers,
+            authorization: token ? await JSON.parse(token) : '',
+        },
+    }
+})
 
 export const client = new ApolloClient({
-    uri: 'http://localhost:4000',
+    link: authLink.concat(httpLink),
     cache: new InMemoryCache(),
 })
