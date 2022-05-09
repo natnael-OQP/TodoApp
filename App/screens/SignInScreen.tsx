@@ -1,11 +1,60 @@
-import { useState } from 'react'
-import { StyleSheet, Text, TextInput, View, Pressable } from 'react-native'
+import { useEffect, useState } from 'react'
+import {
+    StyleSheet,
+    Text,
+    TextInput,
+    View,
+    Pressable,
+    ActivityIndicator,
+    Alert,
+} from 'react-native'
+
+import { gql, useMutation } from '@apollo/client'
+
+import AsyncStorage from '@react-native-async-storage/async-storage'
 
 const SignInScreen = ({ navigation }: any) => {
     const [email, setEmail] = useState<string>('')
     const [password, setPassword] = useState<string>('')
 
-    const handelSubmit = () => {}
+    const SignInMutation = gql`
+        mutation ($input: SignInInput!) {
+            signIn(input: $input) {
+                token
+                user {
+                    email
+                    name
+                    id
+                }
+            }
+        }
+    `
+
+    const [signIn, { data, error, loading }] = useMutation(SignInMutation)
+
+    const handelSubmit = () => {
+        signIn({ variables: { input: { email, password } } })
+    }
+
+    const storeData = async (value: string) => {
+        try {
+            const jsonValue = JSON.stringify(value)
+            await AsyncStorage.setItem('token', jsonValue)
+        } catch (error) {
+            console.log(error)
+        }
+    }
+
+    useEffect(() => {
+        if (error) {
+            Alert.alert('Invalid credentials')
+        }
+
+        if (data) {
+            storeData(data.signIn.token)
+            navigation.navigate('Home')
+        }
+    }, [error, data])
 
     return (
         <View style={styles.container}>
@@ -23,6 +72,7 @@ const SignInScreen = ({ navigation }: any) => {
                 secureTextEntry
             />
             <Pressable
+                disabled={loading}
                 onPress={handelSubmit}
                 style={{
                     backgroundColor: '#e33062',
@@ -37,6 +87,7 @@ const SignInScreen = ({ navigation }: any) => {
                 <Text
                     style={{ color: '#FFF', fontSize: 20, fontWeight: '600' }}
                 >
+                    {loading && <ActivityIndicator style={{ marginLeft: 5 }} />}{' '}
                     Sign In
                 </Text>
             </Pressable>
