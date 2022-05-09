@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import {
     StyleSheet,
     Text,
@@ -39,16 +39,22 @@ const SignUpScreen = ({ navigation }: any) => {
         try {
             const jsonValue = JSON.stringify(value)
             await AsyncStorage.setItem('token', jsonValue)
-        } catch (e) {
-            Alert.alert('Error SignUp. Try again')
+        } catch (error) {
+            console.log(error)
         }
     }
 
-    if (data) {
-        // save user
-        storeData(data.signUp.token)
-        navigation.navigate('Home')
-    }
+    useEffect(() => {
+        if (error) {
+            Alert.alert('Error SignUp. Try again')
+        }
+
+        if (data) {
+            // save user
+            storeData(data.signUp.token)
+            navigation.navigate('Home')
+        }
+    }, [error, data])
 
     return (
         <View style={styles.container}>
@@ -89,12 +95,12 @@ const SignUpScreen = ({ navigation }: any) => {
                 <Text
                     style={{ color: '#FFF', fontSize: 20, fontWeight: '600' }}
                 >
-                    {loading && <ActivityIndicator />}
+                    {loading && <ActivityIndicator style={{ marginLeft: 5 }} />}{' '}
                     Sign In
                 </Text>
             </Pressable>
             <Pressable
-                onPress={() => navigation.navigate('SignUp')}
+                onPress={() => navigation.navigate('SignIn')}
                 style={{
                     width: '100%',
                     borderRadius: 6,
