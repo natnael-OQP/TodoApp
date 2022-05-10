@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import {
     Platform,
     StyleSheet,
@@ -8,8 +8,9 @@ import {
 } from 'react-native'
 
 import TodoItem from '../components/TodoItem'
+import { gql, useMutation } from '@apollo/client'
 
-export default function TodoScreen() {
+export default function TodoScreen({ route }: any) {
     const [title, setTitle] = useState<string>('')
     const [todos, setTodos] = useState([
         {
@@ -28,6 +29,31 @@ export default function TodoScreen() {
             isCompleted: false,
         },
     ])
+
+    const getMyTaskLists = gql`
+        mutation ($id: ID!) {
+            getTaskList(id: $id) {
+                title
+                id
+                progress
+                createdAt
+                todos {
+                    content
+                    id
+                }
+            }
+        }
+    `
+
+    useEffect(() => {
+        myTaskList({ variables: route?.params })
+    }, [])
+
+    const [myTaskList, { data, error, loading }] = useMutation(getMyTaskLists)
+
+    if (data) {
+        console.log(data)
+    }
 
     const onSubmit = (index: number) => {
         const newTodo = [...todos]
