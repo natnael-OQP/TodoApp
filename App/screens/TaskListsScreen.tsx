@@ -38,8 +38,6 @@ export default function TaskListsScreen({ navigation }: any) {
         navigation.navigate('Todo', { id })
     }
 
-    console.log(tasks)
-
     return (
         <View style={styles.container}>
             <FlatList
