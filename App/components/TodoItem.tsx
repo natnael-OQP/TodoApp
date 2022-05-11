@@ -5,7 +5,7 @@ import CheckBox from './CheckBox'
 
 interface Props {
     todo: {
-        id: number
+        id: number | null
         content: string
         isCompleted: boolean
     }
