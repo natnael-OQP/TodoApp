@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { StyleSheet, FlatList, Alert } from 'react-native'
+import { StyleSheet, FlatList, Alert, ActivityIndicator } from 'react-native'
 
 import { View } from '../components/Themed'
 
@@ -37,6 +37,21 @@ export default function TaskListsScreen({ navigation }: any) {
         console.log(id)
         navigation.navigate('Todo', { id })
     }
+
+    if (loading)
+        return (
+            <View
+                style={{
+                    flexDirection: 'row',
+                    flex: 1,
+                    justifyContent: 'center',
+                    alignSelf: 'center',
+                    alignItems: 'center',
+                }}
+            >
+                <ActivityIndicator size="large" />
+            </View>
+        )
 
     return (
         <View style={styles.container}>
