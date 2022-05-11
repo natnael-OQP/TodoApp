@@ -119,7 +119,7 @@ exports.Mutation = {
     ) => {
         if (!authUser)
             throw new Error("please login first your't Authenticated ")
-        if (!taskListId || !content) throw new Error('fille input filed')
+        if (!taskListId) throw new Error('fille input filed')
 
         try {
             const newTodo = { content, taskListId }
