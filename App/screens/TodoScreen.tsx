@@ -5,10 +5,13 @@ import {
     FlatList,
     TextInput,
     KeyboardAvoidingView,
+    Alert,
+    ActivityIndicator,
+    View,
 } from 'react-native'
 
 import TodoItem from '../components/TodoItem'
-import { gql, useMutation } from '@apollo/client'
+import { gql, useMutation, useQuery } from '@apollo/client'
 
 export default function TodoScreen({ route }: any) {
     const [title, setTitle] = useState<string>('')
@@ -29,9 +32,10 @@ export default function TodoScreen({ route }: any) {
             isCompleted: false,
         },
     ])
+    let { id } = route.params
 
     const getMyTaskLists = gql`
-        mutation ($id: ID!) {
+        query ($id: ID!) {
             getTaskList(id: $id) {
                 title
                 id
@@ -40,33 +44,81 @@ export default function TodoScreen({ route }: any) {
                 todos {
                     content
                     id
+                    isCompleted
                 }
             }
         }
     `
 
+    const { data, error, loading } = useQuery(getMyTaskLists, {
+        variables: { id },
+    })
+
+    const Create_Todo = gql`
+        mutation ($content: String!, $taskListId: ID!) {
+            createTodo(content: $content, taskListId: $taskListId) {
+                content
+                id
+                isCompleted
+                taskList {
+                    id
+                    title
+                    progress
+                    createdAt
+                    todos {
+                        content
+                        id
+                        isCompleted
+                    }
+                }
+            }
+        }
+    `
+
+    const [
+        createTodo,
+        { data: newTodoData, error: newTodoError, loading: newTodoLoading },
+    ] = useMutation(Create_Todo, { refetchQueries: getMyTaskLists })
+
     useEffect(() => {
-        myTaskList({ variables: route?.params })
-    }, [])
+        if (error) {
+            console.log(error)
 
-    const [myTaskList, { data, error, loading }] = useMutation(getMyTaskLists)
+            Alert.alert('Error Fetching Task Lists', error.message)
+        }
+    }, [error])
 
-    if (data) {
-        console.log(data)
-    }
+    useEffect(() => {
+        if (data) {
+            setTitle(data.getTaskList.title)
+        }
+        console.log(data?.getTaskList?.todos?.length > 0)
 
-    const onSubmit = (index: number) => {
-        const newTodo = [...todos]
-        let id = 4
-        newTodo.splice(index, 0, {
-            id: id + index,
-            content: '',
-            isCompleted: false,
-        })
-        setTodos(newTodo)
+        if (data?.getTaskList?.todos?.length > 0) {
+            setTodos(data.getTaskList.todos)
+        }
+    }, [data])
+
+    const onSubmit = () => {
+        createTodo({ variables: { content: '', taskListId: id } })
     }
 
     const keyboardVerticalOffset = Platform.OS === 'ios' ? 40 : 0
+
+    if (loading)
+        return (
+            <View
+                style={{
+                    flexDirection: 'row',
+                    flex: 1,
+                    justifyContent: 'center',
+                    alignSelf: 'center',
+                    alignItems: 'center',
+                }}
+            >
+                <ActivityIndicator size="large" />
+            </View>
+        )
 
     return (
         <KeyboardAvoidingView
@@ -89,10 +141,7 @@ export default function TodoScreen({ route }: any) {
                     isCompleted: boolean
                 }) => item.id}
                 renderItem={({ item, index }) => (
-                    <TodoItem
-                        todo={item}
-                        onSubmit={() => onSubmit(index + 1)}
-                    />
+                    <TodoItem todo={item} onSubmit={() => onSubmit()} />
                 )}
             />
         </KeyboardAvoidingView>
