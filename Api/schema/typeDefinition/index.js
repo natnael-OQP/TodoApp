@@ -41,6 +41,7 @@ module.exports = gql`
     #---------------------------------- Query ----------------------------------
     type Query {
         myTaskList: [TaskList!]!
+        getTaskList(id: ID!): TaskList!
     }
     #---------------------------------- Mutation ----------------------------------
     type Mutation {
@@ -50,7 +51,6 @@ module.exports = gql`
         createTaskList(title: String!): TaskList!
         updateTaskList(id: ID!, title: String!): TaskList!
         deleteTaskList(id: ID!): String!
-        getTaskList(id: ID!): TaskList!
         addUserToTaskList(taskListId: ID!, userId: ID!): TaskList!
         # -- todo --
         createTodo(content: String!, taskListId: ID!): Todo!
